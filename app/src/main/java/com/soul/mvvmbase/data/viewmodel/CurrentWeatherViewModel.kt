@@ -1,0 +1,29 @@
+package com.soul.mvvmbase.data.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.soul.mvvmbase.data.network.repository.ForecastRepository
+import com.soul.mvvmbase.data.provider.LocationProvider
+import kotlinx.coroutines.*
+
+class CurrentWeatherViewModel(
+    private val forecastRepository: ForecastRepository,
+    val locationProvider: LocationProvider
+): ViewModel() {
+    var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+        forecastRepository.getCurrentWeather(locationProvider.getLocationCode())
+    }
+
+
+    fun fetchNewWeatherWhenLocationChanged(){
+        Log.d("TAG", "fetchNewWeatherWhenLocationChanged: ")
+        if(!locationProvider.WhetherUseDeviecLocation()){
+            weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+                forecastRepository.getCurrentWeather(locationProvider.getLocationCode())
+            }
+        }
+
+    }
+}

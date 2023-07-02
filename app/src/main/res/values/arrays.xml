@@ -1,0 +1,13 @@
+<resources>
+    <string-array name="location_name">
+        <item>北京</item>
+        <item>上海</item>
+        <item>成都</item>
+    </string-array>
+
+    <string-array name="location_value">
+        <item>101010100</item>
+        <item>101020100</item>
+        <item>101270101</item>
+    </string-array>
+</resources>
