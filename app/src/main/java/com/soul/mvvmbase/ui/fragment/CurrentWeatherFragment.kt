@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission
@@ -17,6 +18,7 @@ import com.afollestad.assent.runWithPermissions
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
+import com.soul.mvvmbase.data.bean.WeatherLocation
 import com.soul.mvvmbase.data.viewmodel.CurrentWeatherViewModel
 import com.soul.mvvmbase.databinding.FragmentCurrentWeatherBinding
 import kotlinx.coroutines.launch
@@ -65,9 +67,8 @@ class CurrentWeatherFragment : Fragment() {
                 if (it.errorCode == 0) {
                     Log.d("TAG", "getResult: $it")
                     //可在其中解析amapLocation获取相应内容。
-                    currentWeatherViewModel.locationProvider.setAutoLocationCode(it.longitude.roundTo2DecimalPlaces()  +","+ it.latitude.roundTo2DecimalPlaces() )
-                    currentWeatherViewModel.locationProvider.setAutoLocationName(it.city)
-                    currentWeatherViewModel.locationProvider.currentLocationName.postValue("null")
+                    currentWeatherViewModel.persistFethedWeatherLocation(WeatherLocation(it.latitude.roundTo2DecimalPlaces(),it.longitude.roundTo2DecimalPlaces(),it.province,it.coordType,it.city,it.district,it.cityCode,
+                    it.adCode,it.address,it.country))
                 }else {
 
                     //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
@@ -80,7 +81,7 @@ class CurrentWeatherFragment : Fragment() {
         })
 
 
-        if(currentWeatherViewModel.locationProvider.WhetherUseDeviecLocation()){
+        if(currentWeatherViewModel.locationProvider.use_device_location.value == true){
             Log.d("TAG", "bindUI:startLocation ")
             runWithPermissions(Permission.ACCESS_COARSE_LOCATION,Permission.ACCESS_FINE_LOCATION){
                 val info: PackageInfo = requireContext().packageManager.getPackageInfo(
@@ -107,17 +108,23 @@ class CurrentWeatherFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            currentWeatherViewModel.locationProvider.currentLocationName.observe(viewLifecycleOwner, Observer {
+            currentWeatherViewModel.locationProvider.use_device_location.observe(viewLifecycleOwner, Observer {
                 currentWeatherViewModel.fetchNewWeatherWhenLocationChanged()
             })
+
+            val weatherLocation = currentWeatherViewModel.weatherLocation.await()
+            weatherLocation.observe(viewLifecycleOwner, Observer {
+                updateActionBar(it.city)
+            })
+
             val currentWeather = currentWeatherViewModel.weather.await()
             currentWeather.observe(viewLifecycleOwner
                 , Observer {
                     Log.d("TAG", "bindUI123: ${it.toString()}")
                     if(it ==null) return@Observer
-                    updateActionBar(if(currentWeatherViewModel.locationProvider.WhetherUseDeviecLocation()){
+                    updateActionBar(if(currentWeatherViewModel.locationProvider.use_device_location.value == true){
                         Log.d("TAG", "bindUI 1: ")
-                        currentWeatherViewModel.locationProvider.getAutoLocationName()
+//                        currentWeatherViewModel.weatherLocation.await().value.city
                     }else{
                         Log.d("TAG", "bindUI 2: ")
                         currentWeatherViewModel.locationProvider.getSelectedLocationName()

@@ -7,8 +7,8 @@ import org.threeten.bp.ZonedDateTime
 const val WEATHER_LOCATION_ID = 0
 
 @Entity(tableName = "weather_location")
-data class WeatherLocation(val latitude: Double,
-                           val longitude: Double,
+data class WeatherLocation(val latitude: String,
+                           val longitude: String,
                            val province: String,
                            val coordType: String,
                            val city: String,
@@ -21,5 +21,5 @@ data class WeatherLocation(val latitude: Double,
     @PrimaryKey(autoGenerate = false)
     var id:Int =WEATHER_LOCATION_ID
 
-    lateinit var location_time: ZonedDateTime
+    var location_time = ZonedDateTime.now()
 }

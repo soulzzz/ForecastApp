@@ -27,7 +27,9 @@ class LocationProviderImpl(context:Context,
     override fun getSelectedLocationName()= namestringArray.get(valuestringArray.indexOf(getSelectedLocationCode()))
     override fun getSelectedLocationCode()= preference.getString(CUSTOM_LOCATION,"101010100")!!
 
-
-
     private val _use_device_location = MutableLiveData<Boolean>()
+    init{
+        _use_device_location.value = preference.getBoolean(USE_DEVICE_LOCATION,true)
+    }
+
 }

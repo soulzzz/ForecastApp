@@ -16,25 +16,29 @@ class CurrentWeatherViewModel(
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
         forecastRepository.getCurrentWeather(
             if(locationProvider.use_device_location.value == true){
-                locationProvider.getAutoLocationCode()
+                var tmp = forecastRepository.getWeatherLocation().value
+                tmp?.longitude.toString()+","+tmp?.longitude.toString()
             }else{
                 locationProvider.getSelectedLocationCode()
             }
         )
     }
+    var weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+            forecastRepository.getWeatherLocation()
+        }
+
 
 
     fun fetchNewWeatherWhenLocationChanged(){
         Log.d("TAG", "fetchNewWeatherWhenLocationChanged: ")
-        if(!locationProvider.WhetherUseDeviecLocation()){
             weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-                forecastRepository.getCurrentWeather(if(locationProvider.WhetherUseDeviecLocation()){
-                    locationProvider.getAutoLocationCode()
+                forecastRepository.getCurrentWeather(if(locationProvider.use_device_location.value == true){
+                    var tmp = forecastRepository.getWeatherLocation().value
+                    tmp?.longitude.toString()+","+tmp?.longitude.toString()
                 }else{
                     locationProvider.getSelectedLocationCode()
                 })
             }
-        }
 
     }
     fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
