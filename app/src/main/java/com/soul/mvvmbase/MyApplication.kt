@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.preference.PreferenceManager
 import com.soul.mvvmbase.data.db.CurrentWeatherDao
 import com.soul.mvvmbase.data.db.ForecastDatabase
+import com.soul.mvvmbase.data.db.WeatherLocationDao
 import com.soul.mvvmbase.data.network.WeatherNetworkDataSource
 import com.soul.mvvmbase.data.network.WeatherNetworkDataSourceImpl
 import com.soul.mvvmbase.data.network.api.WeatherApiService
@@ -26,10 +27,11 @@ class MyApplication : Application() {
     private val appModule = module {
 
         single<CurrentWeatherDao> { ForecastDatabase(applicationContext).currentWeatherDao() }
+        single<WeatherLocationDao> { ForecastDatabase(applicationContext).weatherLocationDao() }
         single<ConnectivityInterceptor> {  ConnectivityInterceptorImpl(get())}
         single<WeatherApiService> { WeatherApiService(get()) }
         single<WeatherNetworkDataSource> { WeatherNetworkDataSourceImpl(get()) }
-        single<ForecastRepository> { ForecastRepositoryImpl(get(),get()) }
+        single<ForecastRepository> { ForecastRepositoryImpl(get(),get(),get()) }
         single<LocationProvider>{LocationProviderImpl(applicationContext)}
         single<CurrentWeatherViewModelFactory>{ CurrentWeatherViewModelFactory(get(),get()) }
         single<CurrentWeatherViewModel>{ CurrentWeatherViewModel(get(),get())}

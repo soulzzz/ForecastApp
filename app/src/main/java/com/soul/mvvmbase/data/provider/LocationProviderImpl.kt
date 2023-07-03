@@ -10,7 +10,13 @@ import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceScreen
 import com.soul.mvvmbase.R
 
-class LocationProviderImpl(context:Context) : LocationProvider {
+const val USE_DEVICE_LOCATION = "USE_DEVICE_LOCATION"
+const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
+class LocationProviderImpl(context:Context,
+
+) : LocationProvider {
+    override val use_device_location: MutableLiveData<Boolean>
+        get() =_use_device_location
     private val appContext =context.applicationContext
     private val namestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_name)
     private val valuestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_value)
@@ -19,31 +25,9 @@ class LocationProviderImpl(context:Context) : LocationProvider {
 
 
     override fun getSelectedLocationName()= namestringArray.get(valuestringArray.indexOf(getSelectedLocationCode()))
-    override fun getSelectedLocationCode()= preference.getString("CUSTOM_LOCATION","101010100")!!
+    override fun getSelectedLocationCode()= preference.getString(CUSTOM_LOCATION,"101010100")!!
 
-    override fun WhetherUseDeviecLocation() = preference.getBoolean("USE_DEVICE_LOCATION",true)
-    override fun getAutoLocationName(): String {
-        return preference.getString("AUTO_LOCATION_NAME","北京")!!
-    }
 
-    override fun getAutoLocationCode(): String {
-        return preference.getString("AUTO_LOCATION_CODE","116.41,39.92")!!
-    }
 
-    override fun setAutoLocationName(name: String) {
-        preference.edit {
-            putString("AUTO_LOCATION_NAME",name)
-        }
-    }
-
-    override fun setAutoLocationCode(code: String) {
-        preference.edit {
-            putString("AUTO_LOCATION_CODE",code)
-        }
-    }
-
-    override val currentLocationName: MutableLiveData<String>
-        get()=_currentLocationName
-
-    private val _currentLocationName = MutableLiveData<String>()
+    private val _use_device_location = MutableLiveData<Boolean>()
 }

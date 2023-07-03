@@ -13,10 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission
 import com.afollestad.assent.runWithPermissions
-import com.baidu.location.*
-//import com.amap.api.location.AMapLocationClient
-//import com.amap.api.location.AMapLocationClientOption
-//import com.amap.api.location.AMapLocationListener
+
+import com.amap.api.location.AMapLocationClient
+import com.amap.api.location.AMapLocationClientOption
+import com.amap.api.location.AMapLocationListener
 import com.soul.mvvmbase.data.viewmodel.CurrentWeatherViewModel
 import com.soul.mvvmbase.databinding.FragmentCurrentWeatherBinding
 import kotlinx.coroutines.launch
@@ -55,47 +55,34 @@ class CurrentWeatherFragment : Fragment() {
 
     }
     fun bindUI(){
-//        var mLocationClient:AMapLocationClient = AMapLocationClient(activity?.applicationContext)
-//
-//        var option = AMapLocationClientOption()
-//        option.isOnceLocation = true
-//        option.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
-//        mLocationClient.setLocationListener(AMapLocationListener {
-//            if(it!=null){
-//                if (it.errorCode == 0) {
-//                    Log.d("TAG", "getResult: $it")
-//                    //可在其中解析amapLocation获取相应内容。
-//                    currentWeatherViewModel.locationProvider.setAutoLocationCode(it.longitude.roundTo2DecimalPlaces()  +","+ it.latitude.roundTo2DecimalPlaces() )
-//                    currentWeatherViewModel.locationProvider.setAutoLocationName(it.city)
-//                    currentWeatherViewModel.locationProvider.currentLocationName.postValue("null")
-//                }else {
-//                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-//                    Log.e("AmapError","location Error, ErrCode:"
-//                            + it.errorCode + ", errInfo:"
-//                            + it.errorInfo
-//                    );
-//                }
-//            }
-//        })
+        var mLocationClient:AMapLocationClient = AMapLocationClient(activity?.applicationContext)
 
-        var option = LocationClientOption()
-        option.setIsNeedAddress(true);
-        option.setCoorType("bd09ll");
-        option.setNeedNewVersionRgc(true);
-        option.setIsNeedLocationDescribe(true);
-        LocationClient.setAgreePrivacy(true)
-        var mLocationClient = LocationClient(activity?.application)
-        mLocationClient.locOption = option;
-        mLocationClient.registerLocationListener(object :BDAbstractLocationListener(){
-            override fun onReceiveLocation(p0: BDLocation?) {
-                Log.d("TAG", "onReceiveLocation:${p0} ${p0?.latitude?.roundTo2DecimalPlaces()} ${p0?.longitude?.roundTo2DecimalPlaces()}")
+        var option = AMapLocationClientOption()
+        option.isOnceLocation = true
+        option.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+        mLocationClient.setLocationListener(AMapLocationListener {
+            if(it!=null){
+                if (it.errorCode == 0) {
+                    Log.d("TAG", "getResult: $it")
+                    //可在其中解析amapLocation获取相应内容。
+                    currentWeatherViewModel.locationProvider.setAutoLocationCode(it.longitude.roundTo2DecimalPlaces()  +","+ it.latitude.roundTo2DecimalPlaces() )
+                    currentWeatherViewModel.locationProvider.setAutoLocationName(it.city)
+                    currentWeatherViewModel.locationProvider.currentLocationName.postValue("null")
+                }else {
+
+                    //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                    Log.e("AmapError","location Error ${it.locationDetail}, ErrCode:"
+                            + it.errorCode + ", errInfo:"
+                            + it.errorInfo
+                    );
+                }
             }
-
         })
+
+
         if(currentWeatherViewModel.locationProvider.WhetherUseDeviecLocation()){
             Log.d("TAG", "bindUI:startLocation ")
             runWithPermissions(Permission.ACCESS_COARSE_LOCATION,Permission.ACCESS_FINE_LOCATION){
-                mLocationClient.start()
                 val info: PackageInfo = requireContext().packageManager.getPackageInfo(
                     requireContext().packageName, PackageManager.GET_SIGNATURES
                 )
@@ -110,12 +97,12 @@ class CurrentWeatherFragment : Fragment() {
                     hexString.append(appendString)
                 }
                 Log.d("TAG", "SHA1: ${hexString.toString()}")
-//                if( null != mLocationClient){
-//                    mLocationClient.setLocationOption(option);
-//                    //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
-//                    mLocationClient.stopLocation();
-//                    mLocationClient.startLocation();
-//                }
+                if( null != mLocationClient){
+                    mLocationClient.setLocationOption(option);
+                    //设置场景模式后最好调用一次stop，再调用start以保证场景模式生效
+                    mLocationClient.stopLocation();
+                    mLocationClient.startLocation();
+                }
             }
         }
 
@@ -150,8 +137,8 @@ class CurrentWeatherFragment : Fragment() {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "onCreate: ")
 
-//        AMapLocationClient.updatePrivacyShow(activity?.application, true, true);
-//        AMapLocationClient.updatePrivacyAgree(activity?.application, true);
+        AMapLocationClient.updatePrivacyShow(activity?.application, true, true);
+        AMapLocationClient.updatePrivacyAgree(activity?.application, true);
 
 
 

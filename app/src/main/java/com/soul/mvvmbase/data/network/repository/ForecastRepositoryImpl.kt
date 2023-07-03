@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.soul.mvvmbase.data.bean.CurrentWeather
+import com.soul.mvvmbase.data.bean.WeatherLocation
 import com.soul.mvvmbase.data.db.CurrentWeatherDao
+import com.soul.mvvmbase.data.db.WeatherLocationDao
 import com.soul.mvvmbase.data.network.WeatherNetworkDataSource
 import com.soul.mvvmbase.data.network.response.CurrentWeatherResponse
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +16,7 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 
 class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
+                             private val weatherLocationDao: WeatherLocationDao,
                              private val weatherNetworkDataSource: WeatherNetworkDataSource
 ) : ForecastRepository {
     init {
@@ -27,11 +30,22 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
            return@withContext currentWeatherDao.getCurrentWeather()
        }
     }
+
+    override suspend fun getWeatherLocation(): LiveData<WeatherLocation> {
+        return withContext(Dispatchers.IO){
+            return@withContext weatherLocationDao.getWeatherLocation()
+        }
+    }
+
     private fun persistFetchedCurrentWeather(fetchedWeatherResponse: CurrentWeatherResponse){
         GlobalScope.launch(Dispatchers.IO){
             currentWeatherDao.upsert(fetchedWeatherResponse.currentWeather)
         }
-
+    }
+    override fun persistFetchedWeatherLocation(weatherLocation: WeatherLocation){
+        GlobalScope.launch(Dispatchers.IO){
+            weatherLocationDao.upsert(weatherLocation)
+        }
     }
     private suspend fun initWeatherData(location: String){
         Log.d("TAG", "initWeatherData: ")

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.soul.mvvmbase.data.bean.WeatherLocation
 import com.soul.mvvmbase.data.network.repository.ForecastRepository
 import com.soul.mvvmbase.data.provider.LocationProvider
 import kotlinx.coroutines.*
@@ -14,7 +15,7 @@ class CurrentWeatherViewModel(
 ): ViewModel() {
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
         forecastRepository.getCurrentWeather(
-            if(locationProvider.WhetherUseDeviecLocation()){
+            if(locationProvider.use_device_location.value == true){
                 locationProvider.getAutoLocationCode()
             }else{
                 locationProvider.getSelectedLocationCode()
@@ -35,5 +36,8 @@ class CurrentWeatherViewModel(
             }
         }
 
+    }
+    fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
+        forecastRepository.persistFetchedWeatherLocation(weatherLocation)
     }
 }

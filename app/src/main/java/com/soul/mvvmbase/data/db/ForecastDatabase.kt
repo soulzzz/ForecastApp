@@ -11,7 +11,7 @@ import com.soul.mvvmbase.data.bean.CurrentWeather
 )
 abstract class ForecastDatabase : RoomDatabase() {
     abstract fun currentWeatherDao():CurrentWeatherDao
-
+    abstract fun weatherLocationDao():WeatherLocationDao
     companion object{
         @Volatile
         private var instance:ForecastDatabase? = null
