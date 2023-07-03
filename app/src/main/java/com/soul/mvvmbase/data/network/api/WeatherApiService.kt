@@ -16,6 +16,7 @@ const val API_KEY = "4dbcf5dec570446f8eca22a0e1756b57"
 interface WeatherApiService {
     @GET("now")
     suspend fun getCurrentWeather(@Query("location")location:String): CurrentWeatherResponse
+
     companion object{
         operator fun invoke(connectivityInterceptor: ConnectivityInterceptor):WeatherApiService{
            val reqestIntercepter = Interceptor{chain ->

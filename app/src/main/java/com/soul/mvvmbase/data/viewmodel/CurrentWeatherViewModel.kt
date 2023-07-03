@@ -13,7 +13,13 @@ class CurrentWeatherViewModel(
     val locationProvider: LocationProvider
 ): ViewModel() {
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-        forecastRepository.getCurrentWeather(locationProvider.getLocationCode())
+        forecastRepository.getCurrentWeather(
+            if(locationProvider.WhetherUseDeviecLocation()){
+                locationProvider.getAutoLocationCode()
+            }else{
+                locationProvider.getSelectedLocationCode()
+            }
+        )
     }
 
 
@@ -21,7 +27,11 @@ class CurrentWeatherViewModel(
         Log.d("TAG", "fetchNewWeatherWhenLocationChanged: ")
         if(!locationProvider.WhetherUseDeviecLocation()){
             weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-                forecastRepository.getCurrentWeather(locationProvider.getLocationCode())
+                forecastRepository.getCurrentWeather(if(locationProvider.WhetherUseDeviecLocation()){
+                    locationProvider.getAutoLocationCode()
+                }else{
+                    locationProvider.getSelectedLocationCode()
+                })
             }
         }
 

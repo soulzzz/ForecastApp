@@ -2,6 +2,7 @@ package com.soul.mvvmbase.data.provider
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.ListPreference
@@ -17,10 +18,29 @@ class LocationProviderImpl(context:Context) : LocationProvider {
         get() = PreferenceManager.getDefaultSharedPreferences(appContext)
 
 
-    override fun getLocationName()= namestringArray.get(valuestringArray.indexOf(getLocationCode()))
-    override fun getLocationCode()= preference.getString("CUSTOM_LOCATION","101010100")!!
+    override fun getSelectedLocationName()= namestringArray.get(valuestringArray.indexOf(getSelectedLocationCode()))
+    override fun getSelectedLocationCode()= preference.getString("CUSTOM_LOCATION","101010100")!!
 
     override fun WhetherUseDeviecLocation() = preference.getBoolean("USE_DEVICE_LOCATION",true)
+    override fun getAutoLocationName(): String {
+        return preference.getString("AUTO_LOCATION_NAME","北京")!!
+    }
+
+    override fun getAutoLocationCode(): String {
+        return preference.getString("AUTO_LOCATION_CODE","116.41,39.92")!!
+    }
+
+    override fun setAutoLocationName(name: String) {
+        preference.edit {
+            putString("AUTO_LOCATION_NAME",name)
+        }
+    }
+
+    override fun setAutoLocationCode(code: String) {
+        preference.edit {
+            putString("AUTO_LOCATION_CODE",code)
+        }
+    }
 
     override val currentLocationName: MutableLiveData<String>
         get()=_currentLocationName

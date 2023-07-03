@@ -5,6 +5,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('..\\soulkeystore.jks')
+            storePassword '123456'
+            keyAlias 'key0'
+            keyPassword '123456'
+        }
+        release {
+            storeFile file('..\\soulkeystore.jks')
+            storePassword '123456'
+            keyAlias 'key0'
+            keyPassword '123456'
+        }
+    }
     namespace 'com.soul.mvvmbase'
     compileSdk 33
 
@@ -16,6 +30,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","arm64-v8a","x86_64"
+        }
     }
 
     buildTypes {
@@ -63,4 +81,10 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     // room针对kotlin协程功能的扩展库
     implementation "androidx.room:room-ktx:$room_version"
+
+    implementation 'com.afollestad.assent:core:3.0.2'
+
+//    implementation 'com.amap.api:location:latest.integration'
+
+    implementation 'com.baidu.lbsyun:BaiduMapSDK_Location_All:9.3.7'
 }
