@@ -12,26 +12,15 @@ import kotlinx.coroutines.*
 
 class CurrentWeatherViewModel(
     private val forecastRepository: ForecastRepository,
-    val locationProvider: LocationProvider
 ): ViewModel() {
     private val TAG = javaClass.simpleName
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-        var param:String
-        if(locationProvider.isUsingDeviceLocation()){
-            var weatherLocation = weatherLocation.await()
-            param = weatherLocation.value?.longitude+","+weatherLocation.value?.latitude
-            if(param.contains("null")) param = locationProvider.getSelectedLocationCode()
-        }else{
-            param = locationProvider.getSelectedLocationCode()
-        }
-        forecastRepository.getCurrentWeather(param)
+        forecastRepository.getCurrentWeather()
     }
     var weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
         Log.d(TAG, "weatherLocation: async")
             forecastRepository.getWeatherLocation()
         }
-
-
 
     fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
         Log.d(TAG, "persistFethedWeatherLocation: ${weatherLocation}")

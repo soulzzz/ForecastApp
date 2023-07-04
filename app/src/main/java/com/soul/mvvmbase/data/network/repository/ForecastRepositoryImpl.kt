@@ -9,14 +9,17 @@ import com.soul.mvvmbase.data.db.CurrentWeatherDao
 import com.soul.mvvmbase.data.db.WeatherLocationDao
 import com.soul.mvvmbase.data.network.WeatherNetworkDataSource
 import com.soul.mvvmbase.data.network.response.CurrentWeatherResponse
+import com.soul.mvvmbase.data.provider.LocationProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
+import java.util.*
 
 class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
                              private val weatherLocationDao: WeatherLocationDao,
+                             private val locationProvider: LocationProvider,
                              private val weatherNetworkDataSource: WeatherNetworkDataSource
 ) : ForecastRepository {
     init {
@@ -50,13 +53,18 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
     private suspend fun initWeatherData(location: String){
         Log.d("TAG", "initWeatherData: ")
-        val weatherLocation =  getWeatherLocation()
-        if(weatherLocation.value ==null){
-            weatherNetworkDataSource.fetchCurrentWeather(location)
-        }else{
-            if(isFetchCurrentNeeded(weatherLocation.value!!.location_time))
-                weatherNetworkDataSource.fetchCurrentWeather(location)
+        val lastWeatherLocation = weatherLocationDao.getWeatherLocation().value
+        if(lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
+            fetchCurrentWeather()
+            return
         }
+        if (isFetchCurrentNeeded(lastWeatherLocation.location_time))
+            fetchCurrentWeather()
+    }
+    private suspend fun fetchCurrentWeather() {
+        weatherNetworkDataSource.fetchCurrentWeather(
+            locationProvider.getPreferredLocationString()
+        )
     }
     private fun isFetchCurrentNeeded(lastFetchedTime:ZonedDateTime):Boolean{
 

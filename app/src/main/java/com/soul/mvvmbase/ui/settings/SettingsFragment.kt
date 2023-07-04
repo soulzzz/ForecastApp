@@ -13,14 +13,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SettingsFragment : PreferenceFragmentCompat() ,Preference.OnPreferenceChangeListener{
+class SettingsFragment : PreferenceFragmentCompat() {
     private val  currentWeatherViewModel: CurrentWeatherViewModel by viewModel()
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
-        val USE_DEVICE_LOCATION: Preference? = findPreference("USE_DEVICE_LOCATION")
-        val CUSTOM_LOCATION: Preference? = findPreference("CUSTOM_LOCATION")
-        CUSTOM_LOCATION?.onPreferenceChangeListener = this
-        USE_DEVICE_LOCATION?.onPreferenceChangeListener = this
         Log.d("TAG", "bindUI: ${currentWeatherViewModel}")
     }
 
@@ -32,20 +28,6 @@ class SettingsFragment : PreferenceFragmentCompat() ,Preference.OnPreferenceChan
 
     }
 
-
-    override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        if(preference.key.equals("USE_DEVICE_LOCATION")){
-
-        }else if (preference.key.equals("CUSTOM_LOCATION")){
-
-        }
-        Log.d("TAG", "onPreferenceTreeClick: ")
-        return super.onPreferenceTreeClick(preference)
-    }
-
-    override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
-        TODO("Not yet implemented")
-    }
 
 
 }

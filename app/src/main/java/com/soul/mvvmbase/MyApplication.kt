@@ -32,11 +32,11 @@ class MyApplication : Application() {
         single<ConnectivityInterceptor> {  ConnectivityInterceptorImpl(get())}
         single<WeatherApiService> { WeatherApiService(get()) }
         single<WeatherNetworkDataSource> { WeatherNetworkDataSourceImpl(get()) }
-        single<ForecastRepository> { ForecastRepositoryImpl(get(),get(),get()) }
+        single<ForecastRepository> { ForecastRepositoryImpl(get(),get(),get(),get()) }
         single<AMapLocationClient>{AMapLocationClient(applicationContext)}
-        single<LocationProvider>{LocationProviderImpl(applicationContext)}
-        single<CurrentWeatherViewModelFactory>{ CurrentWeatherViewModelFactory(get(),get()) }
-        single<CurrentWeatherViewModel>{ CurrentWeatherViewModel(get(),get())}
+        single<LocationProvider>{LocationProviderImpl(applicationContext,get())}
+        single<CurrentWeatherViewModelFactory>{ CurrentWeatherViewModelFactory(get()) }
+        single<CurrentWeatherViewModel>{ CurrentWeatherViewModel(get())}
 //        viewModel {
 //            CurrentWeatherViewModel(get(),get()) }
         }
