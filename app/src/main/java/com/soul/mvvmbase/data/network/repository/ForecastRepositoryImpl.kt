@@ -38,6 +38,7 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
 
     private fun persistFetchedCurrentWeather(fetchedWeatherResponse: CurrentWeatherResponse){
+        if(fetchedWeatherResponse == null) return
         GlobalScope.launch(Dispatchers.IO){
             currentWeatherDao.upsert(fetchedWeatherResponse.currentWeather)
         }
@@ -49,12 +50,16 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
     private suspend fun initWeatherData(location: String){
         Log.d("TAG", "initWeatherData: ")
-        if(isFetchCurrentNeeded(ZonedDateTime.now().minusHours(1))){
-            Log.d("TAG", "initWeatherData2: ")
+        val weatherLocation =  getWeatherLocation()
+        if(weatherLocation.value ==null){
             weatherNetworkDataSource.fetchCurrentWeather(location)
+        }else{
+            if(isFetchCurrentNeeded(weatherLocation.value!!.location_time))
+                weatherNetworkDataSource.fetchCurrentWeather(location)
         }
     }
     private fun isFetchCurrentNeeded(lastFetchedTime:ZonedDateTime):Boolean{
+
         val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(30)
         return lastFetchedTime.isBefore(thirtyMinutesAgo)
     }

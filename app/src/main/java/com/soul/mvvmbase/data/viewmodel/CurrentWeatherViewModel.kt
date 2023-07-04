@@ -3,6 +3,7 @@ package com.soul.mvvmbase.data.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.soul.mvvmbase.data.bean.WeatherLocation
 import com.soul.mvvmbase.data.network.repository.ForecastRepository
@@ -13,35 +14,27 @@ class CurrentWeatherViewModel(
     private val forecastRepository: ForecastRepository,
     val locationProvider: LocationProvider
 ): ViewModel() {
+    private val TAG = javaClass.simpleName
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-        forecastRepository.getCurrentWeather(
-            if(locationProvider.use_device_location.value == true){
-                var tmp = forecastRepository.getWeatherLocation().value
-                tmp?.longitude.toString()+","+tmp?.longitude.toString()
-            }else{
-                locationProvider.getSelectedLocationCode()
-            }
-        )
+        var param:String
+        if(locationProvider.isUsingDeviceLocation()){
+            var weatherLocation = weatherLocation.await()
+            param = weatherLocation.value?.longitude+","+weatherLocation.value?.latitude
+            if(param.contains("null")) param = locationProvider.getSelectedLocationCode()
+        }else{
+            param = locationProvider.getSelectedLocationCode()
+        }
+        forecastRepository.getCurrentWeather(param)
     }
     var weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+        Log.d(TAG, "weatherLocation: async")
             forecastRepository.getWeatherLocation()
         }
 
 
 
-    fun fetchNewWeatherWhenLocationChanged(){
-        Log.d("TAG", "fetchNewWeatherWhenLocationChanged: ")
-            weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-                forecastRepository.getCurrentWeather(if(locationProvider.use_device_location.value == true){
-                    var tmp = forecastRepository.getWeatherLocation().value
-                    tmp?.longitude.toString()+","+tmp?.longitude.toString()
-                }else{
-                    locationProvider.getSelectedLocationCode()
-                })
-            }
-
-    }
     fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
+        Log.d(TAG, "persistFethedWeatherLocation: ${weatherLocation}")
         forecastRepository.persistFetchedWeatherLocation(weatherLocation)
     }
 }

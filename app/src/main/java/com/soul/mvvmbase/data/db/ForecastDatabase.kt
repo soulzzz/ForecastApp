@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.soul.mvvmbase.data.bean.CurrentWeather
+import com.soul.mvvmbase.data.bean.WeatherLocation
 
-@Database(entities = [CurrentWeather::class],
+@Database(entities = [CurrentWeather::class,WeatherLocation::class],
     version = 1
 )
 abstract class ForecastDatabase : RoomDatabase() {

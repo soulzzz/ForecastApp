@@ -2,6 +2,7 @@ package com.soul.mvvmbase
 
 import android.app.Application
 import androidx.preference.PreferenceManager
+import com.amap.api.location.AMapLocationClient
 import com.soul.mvvmbase.data.db.CurrentWeatherDao
 import com.soul.mvvmbase.data.db.ForecastDatabase
 import com.soul.mvvmbase.data.db.WeatherLocationDao
@@ -32,6 +33,7 @@ class MyApplication : Application() {
         single<WeatherApiService> { WeatherApiService(get()) }
         single<WeatherNetworkDataSource> { WeatherNetworkDataSourceImpl(get()) }
         single<ForecastRepository> { ForecastRepositoryImpl(get(),get(),get()) }
+        single<AMapLocationClient>{AMapLocationClient(applicationContext)}
         single<LocationProvider>{LocationProviderImpl(applicationContext)}
         single<CurrentWeatherViewModelFactory>{ CurrentWeatherViewModelFactory(get(),get()) }
         single<CurrentWeatherViewModel>{ CurrentWeatherViewModel(get(),get())}
@@ -47,5 +49,7 @@ class MyApplication : Application() {
             modules(appModule)
         }
         PreferenceManager.setDefaultValues(this,R.xml.preference,false)
+        AMapLocationClient.updatePrivacyShow(this, true, true);
+        AMapLocationClient.updatePrivacyAgree(this, true);
     }
 }

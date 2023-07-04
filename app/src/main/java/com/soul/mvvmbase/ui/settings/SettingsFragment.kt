@@ -44,14 +44,7 @@ class SettingsFragment : PreferenceFragmentCompat() ,Preference.OnPreferenceChan
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
-        if(preference.key.equals("USE_DEVICE_LOCATION")){
-            currentWeatherViewModel.locationProvider.use_device_location.postValue(newValue as Boolean)
-        }else if (preference.key.equals("CUSTOM_LOCATION")){
-            currentWeatherViewModel.locationProvider.use_device_location.postValue(false)
-        }
-        Log.d("TAG", "onPreferenceChange: $newValue")
-
-        return true;
+        TODO("Not yet implemented")
     }
 
 

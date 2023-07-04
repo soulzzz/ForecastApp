@@ -2,6 +2,8 @@ package com.soul.mvvmbase.data.bean
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
 const val WEATHER_LOCATION_ID = 0
@@ -21,5 +23,8 @@ data class WeatherLocation(val latitude: String,
     @PrimaryKey(autoGenerate = false)
     var id:Int =WEATHER_LOCATION_ID
 
-    var location_time = ZonedDateTime.now()
+    val location_time:ZonedDateTime
+    get() {
+        return ZonedDateTime.now()
+    }
 }

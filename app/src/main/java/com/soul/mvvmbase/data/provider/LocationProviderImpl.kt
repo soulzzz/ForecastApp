@@ -15,21 +15,18 @@ const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
 class LocationProviderImpl(context:Context,
 
 ) : LocationProvider {
-    override val use_device_location: MutableLiveData<Boolean>
-        get() =_use_device_location
+
     private val appContext =context.applicationContext
     private val namestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_name)
     private val valuestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_value)
     private val preference:SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(appContext)
 
-
     override fun getSelectedLocationName()= namestringArray.get(valuestringArray.indexOf(getSelectedLocationCode()))
     override fun getSelectedLocationCode()= preference.getString(CUSTOM_LOCATION,"101010100")!!
 
-    private val _use_device_location = MutableLiveData<Boolean>()
-    init{
-        _use_device_location.value = preference.getBoolean(USE_DEVICE_LOCATION,true)
+     override fun isUsingDeviceLocation(): Boolean {
+        return preference.getBoolean(USE_DEVICE_LOCATION, true)
     }
 
 }
