@@ -3,6 +3,7 @@ package com.soul.mvvmbase.data.provider
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
+import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,7 +22,7 @@ const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
 class LocationProviderImpl(context:Context,
     private val aMapLocationClient: AMapLocationClient
 ) : LocationProvider {
-
+    private val TAG = javaClass.simpleName
     private val appContext =context.applicationContext
     private val namestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_name)
     private val valuestringArray:Array<String> = appContext.resources.getStringArray(R.array.location_value)
@@ -60,15 +61,18 @@ class LocationProviderImpl(context:Context,
     override suspend fun getPreferredLocationString(): String {
         if (isUsingDeviceLocation()) {
             try {
-                val deviceLocation = getLastDeviceLocation()
-                    ?: return "${getSelectedLocationName()}"
-                return "${deviceLocation.latitude.roundTo2DecimalPlaces()},${deviceLocation.longitude.roundTo2DecimalPlaces()}"
+                var deviceLocation = getLastDeviceLocation()
+                if(deviceLocation.longitude.equals("null") || deviceLocation.city == null){
+                    return getSelectedLocationName()
+                }
+                Log.d(TAG, "getPreferredLocationString: ")
+                return "${deviceLocation.longitude.roundTo2DecimalPlaces()},${deviceLocation.latitude.roundTo2DecimalPlaces()}"
             } catch (e: java.lang.Exception) {
-                return "${getSelectedLocationName()}"
+                return getSelectedLocationName()
             }
         }
         else
-            return "${getSelectedLocationName()}"
+            return getSelectedLocationName()
     }
 
     private fun getLastDeviceLocation(): AMapLocation {

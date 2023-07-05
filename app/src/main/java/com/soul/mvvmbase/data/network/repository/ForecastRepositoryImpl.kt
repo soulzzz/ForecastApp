@@ -27,6 +27,7 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
             persistFetchedCurrentWeather(it)
         })
     }
+    private val TAG = javaClass.simpleName
     override suspend fun getCurrentWeather(location: String): LiveData<CurrentWeather> {
        return withContext(Dispatchers.IO){
            initWeatherData(location)
@@ -41,7 +42,7 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
 
     private fun persistFetchedCurrentWeather(fetchedWeatherResponse: CurrentWeatherResponse){
-        if(fetchedWeatherResponse == null) return
+        if(fetchedWeatherResponse.code == "400") return
         GlobalScope.launch(Dispatchers.IO){
             currentWeatherDao.upsert(fetchedWeatherResponse.currentWeather)
         }
@@ -54,7 +55,9 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     private suspend fun initWeatherData(location: String){
         Log.d("TAG", "initWeatherData: ")
         val lastWeatherLocation = weatherLocationDao.getWeatherLocation().value
+        Log.d(TAG, "initWeatherData from db: ${lastWeatherLocation?.location_time}")
         if(lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
+            Log.d(TAG, "initWeatherData db==null or location changed: ")
             fetchCurrentWeather()
             return
         }
