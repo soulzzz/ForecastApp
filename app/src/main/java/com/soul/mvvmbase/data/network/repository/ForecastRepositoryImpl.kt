@@ -58,7 +58,20 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
     override fun persistFetchedWeatherLocation(weatherLocation: WeatherLocation){
         GlobalScope.launch(Dispatchers.IO){
-            weatherLocationDao.upsert(weatherLocation)
+            var tmpWeatherLocation = weatherLocationDao.getLocationNonLive()
+            if(tmpWeatherLocation!=null){
+                Log.d(TAG, "persistFetchedWeatherLocation: 1 ")
+                if(weatherLocation.city!= tmpWeatherLocation.city || isFetchCurrentNeeded(tmpWeatherLocation.location_time)){
+                    weatherLocationDao.upsert(weatherLocation)
+                    Log.d(TAG, "persistFetchedWeatherLocation:2 ")
+                }
+            }else{
+                Log.d(TAG, "persistFetchedWeatherLocation: 3 ")
+                weatherLocationDao.upsert(weatherLocation)
+            }
+
+
+
         }
     }
 

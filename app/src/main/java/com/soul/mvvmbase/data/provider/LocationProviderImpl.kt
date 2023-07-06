@@ -59,7 +59,6 @@ class LocationProviderImpl(context:Context,
         return false
     }
     override suspend fun getPreferredLocationString(): String {
-        Log.d(TAG, "getPreferredLocationString: ")
         if (isUsingDeviceLocation()) {
             try {
                 var deviceLocation = getLastDeviceLocation()

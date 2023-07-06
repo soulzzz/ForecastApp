@@ -67,7 +67,7 @@ class CurrentWeatherFragment : Fragment() {
                 updateActionBar(weatherLocation.value?.city)
             })
             currentWeather.observe(viewLifecycleOwner, Observer {
-                Log.d("TAG", "currentWeather: ${it.toString()}")
+                Log.d(TAG, "bindUI currentWeather: ${it.toString()}")
                 if (it == null) return@Observer
                 updateTemperatures(it.temp, it.feelsLike)
                 currentWeatherBinding.groupLoading.visibility = View.GONE

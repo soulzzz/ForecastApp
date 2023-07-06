@@ -27,5 +27,7 @@ data class WeatherLocation(
     get() {
         return ZonedDateTime.now()
     }
+
+
     constructor(city: String) : this("null","null","null","null",city,"null","null","null","null","null")
 }
