@@ -8,4 +8,6 @@ interface ForecastRepository {
     suspend fun getCurrentWeather(location: String = "101010100"):LiveData<CurrentWeather>
     suspend fun getWeatherLocation():LiveData<WeatherLocation>
      fun persistFetchedWeatherLocation(weatherLocation: WeatherLocation):Unit
+
+     fun isUsingDeviceLocation():Boolean
 }

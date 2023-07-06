@@ -24,8 +24,17 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
 ) : ForecastRepository {
     init {
         weatherNetworkDataSource.downloadedCurrentWeather.observeForever(Observer {
+            Log.d(TAG, ":persistFetchedCurrentWeather $it ")
             persistFetchedCurrentWeather(it)
         })
+        weatherLocationDao.getWeatherLocation().observeForever {
+            Log.d(TAG, ": getWeatherLocation observeForever ${it}" )
+            if(it !=null && !it.latitude.equals("null")){
+                GlobalScope.launch {
+                    reFetchWeatherData()
+                }
+            }
+        }
     }
     private val TAG = javaClass.simpleName
     override suspend fun getCurrentWeather(location: String): LiveData<CurrentWeather> {
@@ -52,22 +61,39 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
             weatherLocationDao.upsert(weatherLocation)
         }
     }
+
+    override fun isUsingDeviceLocation(): Boolean = locationProvider.isUsingDeviceLocation()
+
+
     private suspend fun initWeatherData(location: String){
-        Log.d("TAG", "initWeatherData: ")
-        val lastWeatherLocation = weatherLocationDao.getWeatherLocation().value
-        Log.d(TAG, "initWeatherData from db: ${lastWeatherLocation?.location_time}")
-        if(lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
-            Log.d(TAG, "initWeatherData db==null or location changed: ")
+        if(locationProvider.isUsingDeviceLocation()){
+            Log.d(TAG, "initWeatherData: isUsingDeviceLocation")
+            val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+            Log.d(TAG, "initWeatherData from db: ${lastWeatherLocation?.location_time}")
+            if(lastWeatherLocation == null || locationProvider.hasLocationChanged(lastWeatherLocation)){
+                Log.d(TAG, "initWeatherData db==null or location changed: ")
+                fetchCurrentWeather()
+                return
+            }
+            if (isFetchCurrentNeeded(lastWeatherLocation.location_time)){
+                fetchCurrentWeather()
+            }
+        }else{
+            Log.d(TAG, "initWeatherData: NotUsingDeviceLocation ")
             fetchCurrentWeather()
-            return
+            persistFetchedWeatherLocation(WeatherLocation(city = locationProvider.getSelectedLocationName()))
         }
-        if (isFetchCurrentNeeded(lastWeatherLocation.location_time))
-            fetchCurrentWeather()
+
     }
     private suspend fun fetchCurrentWeather() {
         weatherNetworkDataSource.fetchCurrentWeather(
             locationProvider.getPreferredLocationString()
         )
+    }
+    private suspend fun reFetchWeatherData(){
+        val lastWeatherLocation = weatherLocationDao.getLocationNonLive()
+        Log.d(TAG, "reFetchWeatherData from db: ${lastWeatherLocation?.location_time}")
+        fetchCurrentWeather()
     }
     private fun isFetchCurrentNeeded(lastFetchedTime:ZonedDateTime):Boolean{
 

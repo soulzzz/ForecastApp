@@ -15,6 +15,7 @@ class CurrentWeatherViewModel(
 ): ViewModel() {
     private val TAG = javaClass.simpleName
     var weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+        Log.d(TAG, ": LAZY weather")
         forecastRepository.getCurrentWeather()
     }
     var weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
@@ -24,6 +25,19 @@ class CurrentWeatherViewModel(
 
     fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
         Log.d(TAG, "persistFethedWeatherLocation: ${weatherLocation}")
-        forecastRepository.persistFetchedWeatherLocation(weatherLocation)
+        if(forecastRepository.isUsingDeviceLocation()){
+            forecastRepository.persistFetchedWeatherLocation(weatherLocation)
+        }
+
+    }
+    fun reInitData(){
+        weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+            Log.d(TAG, ": LAZY weather")
+            forecastRepository.getCurrentWeather()
+        }
+        weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+            Log.d(TAG, "weatherLocation: async")
+            forecastRepository.getWeatherLocation()
+        }
     }
 }
