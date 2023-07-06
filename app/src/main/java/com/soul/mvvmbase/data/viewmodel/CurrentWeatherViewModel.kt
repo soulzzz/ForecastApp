@@ -23,8 +23,8 @@ class CurrentWeatherViewModel(
             forecastRepository.getWeatherLocation()
         }
 
-    fun persistFethedWeatherLocation(weatherLocation: WeatherLocation){
-        Log.d(TAG, "persistFethedWeatherLocation: ${weatherLocation}")
+    fun persistFetchedWeatherLocation(weatherLocation: WeatherLocation){
+        Log.d(TAG, "persistFetchedWeatherLocation: $weatherLocation")
         if(forecastRepository.isUsingDeviceLocation()){
             forecastRepository.persistFetchedWeatherLocation(weatherLocation)
         }

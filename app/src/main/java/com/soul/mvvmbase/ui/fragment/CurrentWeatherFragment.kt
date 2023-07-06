@@ -62,18 +62,18 @@ class CurrentWeatherFragment : Fragment() {
 
             val weatherLocation = currentWeatherViewModel.weatherLocation.await()
             val currentWeather = currentWeatherViewModel.weather.await()
-            weatherLocation.observe(viewLifecycleOwner) {
+            weatherLocation.observe(viewLifecycleOwner, Observer {
                 Log.d(TAG, "bindUI: weatherLocation${weatherLocation.value}")
                 updateActionBar(weatherLocation.value?.city)
-            }
-            currentWeather.observe(viewLifecycleOwner){
+            })
+            currentWeather.observe(viewLifecycleOwner, Observer {
                 Log.d("TAG", "currentWeather: ${it.toString()}")
-                if (it == null) return@observe
+                if (it == null) return@Observer
                 updateTemperatures(it.temp, it.feelsLike)
                 currentWeatherBinding.groupLoading.visibility = View.GONE
 //                    currentWeatherBinding.textview.text = it.toString()
                 currentWeatherBinding.textview.visibility = View.GONE
-            }
+            })
         }
     }
 

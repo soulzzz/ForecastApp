@@ -65,7 +65,7 @@ class MainActivity : BaseActivity() {
                 if (it.errorCode == 0) {
                     Log.d(TAG, "getResult: $it")
                     //可在其中解析amapLocation获取相应内容。
-                    currentWeatherViewModel.persistFethedWeatherLocation(
+                    currentWeatherViewModel.persistFetchedWeatherLocation(
                         WeatherLocation(it.latitude.roundTo2DecimalPlaces(),it.longitude.roundTo2DecimalPlaces(),it.province,it.coordType,it.city,it.district,it.cityCode,
                         it.adCode,it.address,it.country)
                     )
