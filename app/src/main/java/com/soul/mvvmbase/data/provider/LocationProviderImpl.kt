@@ -59,20 +59,25 @@ class LocationProviderImpl(context:Context,
         return false
     }
     override suspend fun getPreferredLocationString(): String {
+        Log.d(TAG, "getPreferredLocationString: ")
         if (isUsingDeviceLocation()) {
             try {
                 var deviceLocation = getLastDeviceLocation()
                 if(deviceLocation.longitude.equals("null") || deviceLocation.city == null){
-                    return getSelectedLocationName()
+                    Log.d(TAG, "getSelectedLocationCode: ")
+                    return getSelectedLocationCode()
                 }
                 Log.d(TAG, "getPreferredLocationString: ")
                 return "${deviceLocation.longitude.roundTo2DecimalPlaces()},${deviceLocation.latitude.roundTo2DecimalPlaces()}"
             } catch (e: java.lang.Exception) {
-                return getSelectedLocationName()
+                return getSelectedLocationCode()
             }
         }
-        else
-            return getSelectedLocationName()
+        else{
+            Log.d(TAG, "getPreferredLocationString: getSelectedLocationCode ${getSelectedLocationCode()}")
+            return getSelectedLocationCode()
+        }
+
     }
 
     private fun getLastDeviceLocation(): AMapLocation {

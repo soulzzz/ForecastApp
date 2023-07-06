@@ -1,6 +1,5 @@
 package com.soul.mvvmbase.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.navigation.NavController
@@ -81,6 +80,12 @@ class MainActivity : BaseActivity() {
             }
         })
         mLocationClient.startLocation()
+    }
+    fun restartLocation(){
+        if(mLocationClient!=null){
+            mLocationClient.stopLocation()
+            mLocationClient.startLocation()
+        }
     }
     fun Double.roundTo2DecimalPlaces() =
         BigDecimal(this).setScale(2, BigDecimal.ROUND_HALF_UP).toString()

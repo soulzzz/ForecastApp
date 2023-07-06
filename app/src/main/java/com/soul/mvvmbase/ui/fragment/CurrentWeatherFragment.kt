@@ -34,9 +34,9 @@ import java.util.*
 
 class CurrentWeatherFragment : Fragment() {
     private val TAG = javaClass.simpleName
-    private val  currentWeatherViewModel: CurrentWeatherViewModel by viewModel()
+    private val currentWeatherViewModel: CurrentWeatherViewModel by viewModel()
     private lateinit var currentWeatherBinding: FragmentCurrentWeatherBinding
-    private val option =AMapLocationClientOption()
+    private val option = AMapLocationClientOption()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,25 +56,26 @@ class CurrentWeatherFragment : Fragment() {
         bindUI()
 
     }
-    fun bindUI(){
-            lifecycleScope.launch {
-                val currentWeather = currentWeatherViewModel.weather.await()
-                val weatherLocation =  currentWeatherViewModel.weatherLocation.await()
 
-                weatherLocation.observe(viewLifecycleOwner, Observer {
-                    updateActionBar(weatherLocation.value!!.city)
-                })
-                currentWeather.observe(viewLifecycleOwner, Observer {
-                    Log.d("TAG", "bindUI123: ${it.toString()}")
-                    if (it == null) return@Observer
-//                    updateActionBar(currentWeatherViewModel.locationProvider.getSelectedLocationName())
-                    updateTemperatures(it.temp, it.feelsLike)
-                    currentWeatherBinding.groupLoading.visibility = View.GONE
+    fun bindUI() {
+        lifecycleScope.launch {
+
+            val weatherLocation = currentWeatherViewModel.weatherLocation.await()
+            val currentWeather = currentWeatherViewModel.weather.await()
+            weatherLocation.observe(viewLifecycleOwner) {
+                Log.d(TAG, "bindUI: weatherLocation${weatherLocation.value}")
+                updateActionBar(weatherLocation.value?.city)
+            }
+            currentWeather.observe(viewLifecycleOwner){
+                Log.d("TAG", "currentWeather: ${it.toString()}")
+                if (it == null) return@observe
+                updateTemperatures(it.temp, it.feelsLike)
+                currentWeatherBinding.groupLoading.visibility = View.GONE
 //                    currentWeatherBinding.textview.text = it.toString()
-                    currentWeatherBinding.textview.visibility = View.GONE
-                })
+                currentWeatherBinding.textview.visibility = View.GONE
             }
         }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,11 +85,13 @@ class CurrentWeatherFragment : Fragment() {
 //        currentWeatherViewModel = ViewModelProvider(this,currentWeatherViewModelFactory)[CurrentWeatherViewModel::class.java]
 
     }
-    private fun updateActionBar(location:String){
+
+    private fun updateActionBar(location: String?) {
         (activity as AppCompatActivity)?.supportActionBar?.title = location
         (activity as AppCompatActivity)?.supportActionBar?.subtitle = "Today"
     }
-    private fun updateTemperatures(tmp:String,feelsTmp:String){
+
+    private fun updateTemperatures(tmp: String, feelsTmp: String) {
         currentWeatherBinding.textviewTmp.text = "$tmp°C"
         currentWeatherBinding.textviewFeelsLikeTmp.text = "Feels like $feelsTmp°C"
     }

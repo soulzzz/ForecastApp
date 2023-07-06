@@ -11,12 +11,17 @@ android {
             storePassword '123456'
             keyAlias 'key0'
             keyPassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
         release {
             storeFile file('..\\soulkeystore.jks')
             storePassword '123456'
             keyAlias 'key0'
             keyPassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled true
+
         }
     }
     namespace 'com.soul.mvvmbase'
