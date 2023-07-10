@@ -90,7 +90,10 @@ dependencies {
     implementation 'com.afollestad.assent:core:3.0.2'
 
     implementation 'com.amap.api:location:latest.integration'
-
+    //render imageView lib
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    //load svg format into Imageview directly
     implementation 'com.caverock:androidsvg:1.4'
+    //recyclerViewAdapter
+    implementation "io.github.cymchad:BaseRecyclerViewAdapterHelper:4.0.0-beta14"
 }

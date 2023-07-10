@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.soul.mvvmbase.data.bean.CurrentWeather
+import com.soul.mvvmbase.data.bean.DailyWeather
 import com.soul.mvvmbase.data.bean.WeatherLocation
 import com.soul.mvvmbase.data.db.CurrentWeatherDao
 import com.soul.mvvmbase.data.db.WeatherLocationDao
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
@@ -76,6 +78,17 @@ class ForecastRepositoryImpl(private val currentWeatherDao: CurrentWeatherDao,
     }
 
     override fun isUsingDeviceLocation(): Boolean = locationProvider.isUsingDeviceLocation()
+    override suspend fun getFutureWeatherList(
+        startDate: LocalDate,
+    ): LiveData<out List<DailyWeather>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getFutureWeatherByDate(
+        date: LocalDate,
+    ): LiveData<out DailyWeather> {
+        TODO("Not yet implemented")
+    }
 
 
     private suspend fun initWeatherData(){

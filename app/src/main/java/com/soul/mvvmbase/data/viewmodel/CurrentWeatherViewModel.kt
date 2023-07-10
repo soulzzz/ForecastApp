@@ -32,11 +32,11 @@ class CurrentWeatherViewModel(
     }
     fun reInitData(){
         weather =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-            Log.d(TAG, ": LAZY weather")
+            Log.d(TAG, ":reInitData LAZY weather")
             forecastRepository.getCurrentWeather()
         }
         weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-            Log.d(TAG, "weatherLocation: async")
+            Log.d(TAG, "reInitData weatherLocation: async")
             forecastRepository.getWeatherLocation()
         }
     }

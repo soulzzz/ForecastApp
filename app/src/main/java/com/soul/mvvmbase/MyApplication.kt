@@ -17,6 +17,7 @@ import com.soul.mvvmbase.data.provider.LocationProvider
 import com.soul.mvvmbase.data.provider.LocationProviderImpl
 import com.soul.mvvmbase.data.viewmodel.CurrentWeatherViewModel
 import com.soul.mvvmbase.data.viewmodel.CurrentWeatherViewModelFactory
+import com.soul.mvvmbase.data.viewmodel.FutureWeatherViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -37,8 +38,8 @@ class MyApplication : Application() {
         single<LocationProvider>{LocationProviderImpl(applicationContext,get())}
         single<CurrentWeatherViewModelFactory>{ CurrentWeatherViewModelFactory(get()) }
         single<CurrentWeatherViewModel>{ CurrentWeatherViewModel(get())}
-//        viewModel {
-//            CurrentWeatherViewModel(get(),get()) }
+        single<FutureWeatherViewModel>{FutureWeatherViewModel(get())}
+
         }
 
     override fun onCreate() {

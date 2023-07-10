@@ -45,7 +45,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar_loading" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="实时天气"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
     <TextView
         android:id="@+id/weather_text"
         android:layout_width="wrap_content"
@@ -63,27 +72,24 @@
         android:id="@+id/imageView_weather"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="96dp"
         android:src="@drawable/ic_future_seven_day"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.281" />
+        app:layout_constraintLeft_toLeftOf="@+id/weather_text"
+       app:layout_constraintTop_toBottomOf="@id/weather_text"
+        app:layout_constraintRight_toRightOf="@id/weather_text"
+        />
 
     <TextView
         android:id="@+id/textview_tmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:layout_marginEnd="68dp"
+        android:layout_marginTop="20dp"
         android:text="25.0°C"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView_weather"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView_weather"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView_weather"
+        app:layout_constraintVertical_bias="0" />
 
     <TextView
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -102,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
-        android:text="风向:东南风"
+        android:text="风向:"
         app:layout_constraintLeft_toLeftOf="@+id/textview_feels_like_tmp"
         app:layout_constraintTop_toBottomOf="@+id/textview_feels_like_tmp" />
 
@@ -112,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="风力等级:1"
+        android:text="风力等级:"
         app:layout_constraintLeft_toLeftOf="@+id/textview_wind_dir"
         app:layout_constraintTop_toBottomOf="@+id/textview_wind_dir" />
     <TextView
@@ -121,7 +127,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="相对湿度:10%"
+        android:text="相对湿度:"
         app:layout_constraintLeft_toLeftOf="@+id/textview_wind_scale"
         app:layout_constraintTop_toBottomOf="@+id/textview_wind_scale" />
 
@@ -131,7 +137,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="能见度:16公里"
+        android:text="能见度:"
         app:layout_constraintLeft_toLeftOf="@+id/textview_humidity"
         app:layout_constraintTop_toBottomOf="@+id/textview_humidity" />
 
