@@ -14,6 +14,7 @@ import com.amap.api.location.AMapLocationClientOption
 import com.caverock.androidsvg.SVG
 import com.soul.mvvmbase.data.viewmodel.CurrentWeatherViewModel
 import com.soul.mvvmbase.databinding.FragmentCurrentWeatherBinding
+import com.soul.mvvmbase.util.SvgUtil
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
@@ -62,7 +63,8 @@ class CurrentWeatherFragment : Fragment() {
                 currentWeatherBinding.groupLoading.visibility = View.GONE
 //                    currentWeatherBinding.textview.text = it.toString()
                 currentWeatherBinding.textview.visibility = View.GONE
-                updateIcon(it.icon)
+
+                SvgUtil.updateIcon(requireContext(),it.icon,currentWeatherBinding.imageViewWeather)
                 updateWeatherText(it.text)
                 updateWeatherWindInfo(it.windDir,it.windScale)
                 updateHumidity(it.humidity)
@@ -119,21 +121,21 @@ class CurrentWeatherFragment : Fragment() {
     private fun updateVis(vis : String) {
         currentWeatherBinding.textviewVis.text = "可见度:${vis}公里"
     }
-    private fun updateIcon(img:String){
-        try {
-            // 从Assets目录下读取SVG文件
-            val inputStream: InputStream = requireContext().assets.open("${img}.svg")
-            // 使用AndroidSVG库解析SVG文件
-            val svg = SVG.getFromInputStream(inputStream)
-            // 创建一个PictureDrawable对象
-            val pictureDrawable = PictureDrawable(svg.renderToPicture())
-            // 将PictureDrawable对象设置给ImageView
-            currentWeatherBinding.imageViewWeather.setImageDrawable(pictureDrawable)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-
-    }
+//    private fun updateIcon(img:String){
+//        try {
+//            // 从Assets目录下读取SVG文件
+//            val inputStream: InputStream = requireContext().assets.open("${img}.svg")
+//            // 使用AndroidSVG库解析SVG文件
+//            val svg = SVG.getFromInputStream(inputStream)
+//            // 创建一个PictureDrawable对象
+//            val pictureDrawable = PictureDrawable(svg.renderToPicture())
+//            // 将PictureDrawable对象设置给ImageView
+//            currentWeatherBinding.imageViewWeather.setImageDrawable(pictureDrawable)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//
+//
+//    }
 
 }

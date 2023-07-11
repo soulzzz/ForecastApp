@@ -13,12 +13,22 @@ class FutureWeatherViewModel (
     private val forecastRepository: ForecastRepository,
 ): ViewModel() {
     private val TAG = javaClass.simpleName
-    val futureWeatherList =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-        Log.d(TAG, ": LAZY weather")
+    var futureWeatherList =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+        Log.d(TAG, "futureWeatherList : LAZY weather")
         forecastRepository.getFutureWeatherList(LocalDate.now())
     }
     var weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
-        Log.d(TAG, "weatherLocation: async")
+        Log.d(TAG, "future weatherLocation: async")
         forecastRepository.getWeatherLocation()
+    }
+    fun reInitData(){
+        futureWeatherList =  GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+            Log.d(TAG, ":reInitData LAZY weather")
+            forecastRepository.getFutureWeatherList(LocalDate.now())
+        }
+        weatherLocation = GlobalScope.async(Dispatchers.IO,start = CoroutineStart.LAZY) {
+            Log.d(TAG, "reInitData weatherLocation: async")
+            forecastRepository.getWeatherLocation()
+        }
     }
 }

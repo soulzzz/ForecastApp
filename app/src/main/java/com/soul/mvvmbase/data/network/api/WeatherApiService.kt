@@ -11,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+const val FUTURE_DAYS = 7
 const val API_KEY = "4dbcf5dec570446f8eca22a0e1756b57"
 const val BASE_URL = "https://devapi.qweather.com/v7/weather/"
 //https://devapi.qweather.com/v7/weather/now?location=beijing&key=4dbcf5dec570446f8eca22a0e1756b57
@@ -18,7 +19,7 @@ interface WeatherApiService {
     @GET("now")
     suspend fun getCurrentWeather(@Query("location")location:String): CurrentWeatherResponse
 
-    @GET("v7")
+    @GET("${FUTURE_DAYS}d")
     suspend fun getFeatureWeather(@Query("location")location:String): FutureWeatherResponse
     companion object{
         operator fun invoke(connectivityInterceptor: ConnectivityInterceptor):WeatherApiService{
